@@ -1,3 +1,4 @@
+import build_index
 import time
 import subprocess
 import os
@@ -19,7 +20,7 @@ class SEOHandler(FileSystemEventHandler):
             # 2. Automatically Push to GitHub
             try:
                 subprocess.run(["git", "add", "."], check=True)
-                subprocess.run(["git", "commit", "-m", f"Auto-update: {title}"], check=True)
+                subprocess.run(["git", "commit", "-m", f"Auto-update: {title}"], check=False)
                 subprocess.run(["git", "push"], check=True)
                 print("🚀 Website successfully updated and live!")
             except Exception as e:
