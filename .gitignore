@@ -1,2 +1,4 @@
 .ssh/
 *.key
+.cache/
+.bash_history
