@@ -1,50 +1,37 @@
 import markdown
-import os
+import time  # <--- Make sure this is here!
 
-def create_seo_page(filename, title, keywords):
-    if not os.path.exists(filename):
-        print(f"❌ Error: {filename} not found.")
-        return
+def create_seo_page(md_file, title, keywords):
+    with open(md_file, "r") as f:
+        content = markdown.markdown(f.read())
 
-    # 1. Read your raw writing
-    with open(filename, 'r') as f:
-        content = f.read()
-
-    # 2. Convert Markdown to HTML
-    html_content = markdown.markdown(content)
-
-    # 3. Define the SEO Template
+    # This is the template that was giving the error
     seo_template = f"""
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="description" content="{content[:150].replace('"', "'")}...">
-        <meta name="keywords" content="{keywords}">
         <title>{title}</title>
+        <meta name="keywords" content="{keywords}">
         <style>
-            body {{ font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: auto; padding: 20px; color: #333; }}
-            h1 {{ color: #2c3e50; }}
+            :root {{ --primary: #2563eb; --text: #1f2937; --bg: #f9fafb; }}
+            body {{ font-family: sans-serif; line-height: 1.7; max-width: 750px; margin: 40px auto; padding: 0 20px; color: var(--text); background: var(--bg); }}
+            h1 {{ font-size: 2.5rem; color: #111827; }}
+            .meta {{ font-size: 0.9rem; color: #6b7280; border-bottom: 1px solid #e5e7eb; padding-bottom: 20px; margin-bottom: 30px; }}
         </style>
     </head>
     <body>
         <h1>{title}</h1>
-        {html_content}
+        <div class="meta">Published on {time.strftime('%B %d, %Y')}</div>
+        <div class="content">
+            {content}
+        </div>
     </body>
     </html>
     """
-
-    # 4. Save the optimized file
-    output_name = filename.replace(".md", ".html")
-    with open(output_name, 'w') as f:
-        f.write(seo_template)
     
-    print(f"✅ SEO Optimized file created: {output_name}")
+    output_file = md_file.replace(".md", ".html")
+    with open(output_file, "w") as f:
+        f.write(seo_template)
+    print(f"✅ SEO Optimized file created: {output_file}")
 
-# --- QUICK TEST ---
-# This creates a sample file if it doesn't exist
-if not os.path.exists("test_blog.md"):
-    with open("test_blog.md", "w") as f:
-        f.write("# Hello World\nThis is my first SEO blog post written in Termux!")
-
-create_seo_page("test_blog.md", "My Termux Blog", "termux, coding, seo")
